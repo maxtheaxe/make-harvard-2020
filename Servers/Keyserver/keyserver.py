@@ -48,9 +48,9 @@ def get_key(key_id):
                 return json.jsonify(key_data)
     abort(404)
 
-@app.route('/latest')
+@app.route('/latest_id')
 def get_latest_key():
-    return get_key(newest_key_id)
+    return newest_key_id
         
 
     
