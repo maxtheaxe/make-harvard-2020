@@ -1,0 +1,10 @@
+The keys.json file contains a single array, `keys`.  Each member of the array MUST have the following elements:
+
+`public_keyfile`: the path to the file containing, verbatim, the public key.
+`date`: the date, in MM/DD/YYYY format, on which the key was brought into use.
+`id`: a unique name for the key.
+
+Each member of the array MAY have any or all of the following elements:
+
+`compromised_date`: the date, in MM/DD/YYYY format, on which the key was reported compromised.
+`priority`: a boolean value indicatng whether the key is to be prioritized above others when determining the most recent key to use.
