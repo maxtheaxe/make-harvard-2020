@@ -22,11 +22,12 @@ def get_newest_key(keys):
 @app.before_first_request
 def load_keys():
     global keys
+    global newest_key_id
     with open(keyfile_path) as keyfile:
         data = json.load(keyfile)
         keys = data['keys']
-        uncompromised = list(filter(lambda key: not hasattr(key, 'compromised_date'), keys))
-        priority_keys = list(filter(lambda key: hasattr(key, 'priority') and key.priority, uncompromised))
+        uncompromised = list(filter(lambda key: 'compromised_date' not in key, keys))
+        priority_keys = list(filter(lambda key: 'priority' in key and key.priority, uncompromised))
         if len(priority_keys) > 0:
             newest_key_id = get_newest_key(priority_keys)['id']
         elif len(uncompromised) > 0:
@@ -39,9 +40,9 @@ def get_key(key_id):
     for key in keys:
         if key['id'] == key_id:
             with open(key['public_keyfile']) as public_keyfile:
-                key_data = {'key': public_keyfile.read().strip('\n')}
-                if hasattr(key, 'compromised_date'):
-                    key_data['compromised_date'] = key['compromised_date']
+                key_data = {'key': public_keyfile.read().strip('\n'), 'date': key['date']}
+                if 'compromise_date' in key:
+                    key_data['compromise_date'] = key['compromise_date']
                 if key['id'] != newest_key_id:
                     key_data['superseded_by'] = newest_key_id
                 return json.jsonify(key_data)
