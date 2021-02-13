@@ -1,4 +1,4 @@
-from flask import Flask, json
+from flask import Flask, json, abort
 from datetime import datetime
 from functools import cmp_to_key
 
@@ -21,6 +21,7 @@ def get_newest_key(keys):
 
 @app.before_first_request
 def load_keys():
+    global keys
     with open(keyfile_path) as keyfile:
         data = json.load(keyfile)
         keys = data['keys']
@@ -34,11 +35,11 @@ def load_keys():
             newest_key_id = get_newest_key(keys)['id']
 
 @app.route('/key/<key_id>')
-def get_key(id):
-    for key in keys.values():
-        if key['id'] == id:
+def get_key(key_id):
+    for key in keys:
+        if key['id'] == key_id:
             with open(key['public_keyfile']) as public_keyfile:
-                key_data = {key: public_keyfile.read()}
+                key_data = {'key': public_keyfile.read().strip('\n')}
                 if hasattr(key, 'compromised_date'):
                     key_data['compromised_date'] = key['compromised_date']
                 if key['id'] != newest_key_id:
