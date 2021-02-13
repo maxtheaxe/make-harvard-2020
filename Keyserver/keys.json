@@ -1,0 +1,15 @@
+{
+    "keys": [
+        {
+            "public_keyfile": "test1.key",
+            "date": "10/10/2020",
+            "id": "October"
+        },
+        {
+            "public_keyfile": "test2.key",
+            "date": "12/11/2020",
+            "id": "December",
+            "compromise_date": "02/01/2021"
+        }
+    ]
+}
