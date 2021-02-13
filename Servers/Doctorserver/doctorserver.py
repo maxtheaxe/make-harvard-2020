@@ -19,11 +19,12 @@ def load_config():
 
 @app.route('/vaccinate', methods=['POST'])
 def vaccinate():
-    patient_name_with_signature = request.form['patient_name']
-    patient_government_url = request.form['patient_gov_url']
+    patient_data = json.loads(request.form['patient_data'])
+    patient_name_with_signature = patient_data['name']
+    patient_government_url = patient_data['gov_url']
     gov_public_key = download_from_web_requests.get(patient_government_url).text
     date = datetime.now().strftime(date_format_string)
     vaccination_dict = {} # get_vaccination_qr_dict (patient_name_with_signature, clinic_name, date, clinic_private_key, gov_public_key)
-    vaccination_dict['clinic_key_url'] = f'{request.url_root}/key/{config['key_id']}'
-    vaccination_dict['patient_government_url'] = patient_government_url
-    return json.stringify(vaccination_dict)
+    vaccination_dict['clinic_url'] = f'{request.url_root}/key/{config['key_id']}'
+    vaccination_dict['gov_url'] = patient_government_url
+    return json.dumps(vaccination_dict)
