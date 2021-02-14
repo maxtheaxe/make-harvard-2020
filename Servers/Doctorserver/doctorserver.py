@@ -2,6 +2,13 @@ from flask import Flask, request, config_file, json
 from datetime import datetime
 from ..keygrabber import grab_key
 
+import smtplib
+import email
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import os
+
 app = Flask(__name__)
 
 config_path = 'config.json'
@@ -22,7 +29,31 @@ def vaccinate():
     patient_data = json.loads(request.form['patient_data'])
     patient_name = patient_data['name']
     date = datetime.now().strftime(date_format_string)
-    return json.dumps({
+    qr_data = json.dumps({
         'patient_data': get_vaccination_qr (patient_name, clinic_name, date, clinic_private_key),
         'clinic_url' = f'{request.url_root}/key/{config['key_id']}'
     })
+    if 'email' in request.form:
+        send_email(request.form['email'], qr_data)
+    return qr_data
+
+def send_email(email, qr_data):
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server_ssl:
+        server_ssl.ehlo()
+        server_ssl.login('vaxportqr@gmail.com', 'BeatsHackHarvard')
+        message = MIMEMultipart()
+        message['From'] = 'vaxportqr@gmail.com'
+        message['To'] = email
+        message['Subject'] = 'Your COVID-19 vaccination verification'
+        message.attach(MIMEText('Please find attached your COVID-19 vaccination verification QR code.', 'plain'))
+        pyqrcode.create(qr_data).png('code.png', scale=2)
+        with open('code.png', 'rb') as qr_attachment:
+            part = MIMEBase('application', 'octet-stream')
+            part.set_payload(qr_attachment.read())
+            encoders.encode_base64(part)
+            part.add_header('Content-Disposition', 'attachment; filename=code.png')
+            message.attach(part)
+        server_ssl.sendmail('vaxportqr@gmail.com', email, message.as_string())
+        os.remove('code.png')
+
+
