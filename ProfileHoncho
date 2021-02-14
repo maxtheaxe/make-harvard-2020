@@ -1,0 +1,4 @@
+flaskWrapper: cd Servers\FlaskWrapper && gunicorn -w 4 -b 0.0.0.0:$PORT -k gevent app:app
+keyserver: cd Servers && gunicorn -w 4 -b 0.0.0.0:5001 -k gevent app:keyserver
+doctorserver: cd Servers && gunicorn -w 4 -b 0.0.0.0:5002 -k gevent app:doctorserver
+verifierserver: cd Flask2 && gunicorn -w 4 -b 0.0.0.0:5003 -k gevent app:verifierserver
