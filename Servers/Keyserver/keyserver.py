@@ -45,6 +45,10 @@ def get_key(key_id):
                     key_data['compromise_date'] = key['compromise_date']
                 if key['id'] != newest_key_id:
                     key_data['superseded_by'] = newest_key_id
+                if 'witness' in key and 'witness_url' in key:
+                    with open(key['witness']) as witness_file:
+                        key_data['witness'] = witness_file.read().strip('\n')
+                        key_data['witness_url'] = key['witness_url']
                 return json.jsonify(key_data)
     abort(404)
 

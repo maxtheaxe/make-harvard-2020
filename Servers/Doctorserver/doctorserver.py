@@ -22,7 +22,7 @@ def vaccinate():
     patient_data = json.loads(request.form['patient_data'])
     patient_name_with_signature = patient_data['name']
     patient_government_url = patient_data['gov_url']
-    gov_public_key, _ = grab_key(patient_government_url)
+    gov_public_key = grab_key(patient_government_url)['key']
     date = datetime.now().strftime(date_format_string)
     return json.dumps({
         'patient_data': get_vaccination_qr (patient_name_with_signature, clinic_name, date, clinic_private_key, gov_public_key),

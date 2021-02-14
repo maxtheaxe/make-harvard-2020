@@ -8,3 +8,5 @@ Each member of the array MAY have any or all of the following elements:
 
 `compromise_date`: the date, in MM/DD/YYYY format, on which the key was reported compromised.
 `priority`: a boolean value indicatng whether the key is to be prioritized above others when determining the most recent key to use.
+`witness`: the path to a file containing the key as signed by a higher authority.
+`witness_url`: the URL from which the higher authority's signing key may be downloaded.
