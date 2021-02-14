@@ -1,15 +1,16 @@
 {
     "keys": [
         {
-            "public_keyfile": "test1.key",
-            "date": "10/10/2020",
-            "id": "October"
+            "public_keyfile": "clinic_pubkey.asc",
+            "date": "02/13/2021",
+            "id": "main",
+            "witness": "witness_message.asc",
+            "witness_url": "localhost:5000/key/witness"
         },
         {
-            "public_keyfile": "test2.key",
-            "date": "12/11/2020",
-            "id": "December",
-            "compromise_date": "02/01/2021"
+            "public_keyfile": "gov_pubkey.asc",
+            "date": "02/13/2021",
+            "id": "witness"
         }
     ]
 }

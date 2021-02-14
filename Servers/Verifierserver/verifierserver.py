@@ -1,6 +1,7 @@
 from flask import Flask, request, config_file, json
 from datetime import datetime
 from ..keygrabber import grab_key
+from ...verifier import get_patient_name, real_vax
 
 app = Flask(__name__)
 

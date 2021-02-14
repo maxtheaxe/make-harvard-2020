@@ -2,6 +2,8 @@ from flask import Flask, request, config_file, json
 from datetime import datetime
 from ..keygrabber import grab_key
 
+from ...verifier import get_vaccination_qr
+
 import smtplib
 import email
 from email.mime.base import MIMEBase
@@ -13,7 +15,7 @@ app = Flask(__name__)
 
 config_path = 'config.json'
 config = {}
-private_key = []
+private_key = ''
 
 @app.before_first_request
 def load_config():
@@ -30,7 +32,7 @@ def vaccinate():
     patient_name = patient_data['name']
     date = datetime.now().strftime(date_format_string)
     qr_data = json.dumps({
-        'patient_data': get_vaccination_qr (patient_name, clinic_name, date, clinic_private_key),
+        'patient_data': get_vaccination_qr (patient_name, config['clinic_name'], date, private_key),
         'clinic_url' = f'{request.url_root}/key/{config['key_id']}'
     })
     if 'email' in request.form:
