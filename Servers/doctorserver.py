@@ -6,10 +6,13 @@ from verifier import get_vaccination_qr
 
 import smtplib
 import email
+from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os
+
+import pyqrcode
 
 app = Flask(__name__)
 
@@ -35,8 +38,8 @@ def vaccinate():
         'vaccine_signature': get_vaccination_qr (patient_name, config['clinic_name'], date, private_key),
         'clinic_url': f"{config['key_server']}{config['key_id']}"
     })
-    if 'email' in request.form:
-        send_email(request.form['email'], qr_data)
+    if 'email' in patient_data:
+        send_email(patient_data['email'], qr_data)
     return qr_data
 
 def send_email(email, qr_data):
