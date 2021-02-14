@@ -2,7 +2,7 @@
 There is a clear need for the ability to verify that someone has received a (legitimate) vaccine during and in the eventual wake of the pandemic. Existing solutions either consist of an easily-counterfeit-able piece of paper, or up-and-coming verification systems that rely on centralized servers, which represent a single point of failure.
 
 ## What it does
-VaxPort is a decentralized system that allows independent operators to cryptographically verify that someone has received a (legitimate) vaccine by scanning their QR code with a simple app we've built. A doctor administers a vaccine which produces a QR code for a patient, that QR code gets scanned, and the patient's vaccine gets verified so the person can safely return to life. 
+VaxPort is a decentralized system that allows independent operators to cryptographically verify that someone has received a (legitimate) vaccine by scanning their QR code with a simple app we've built. A doctor administers a vaccine which produces a QR code for a patient, that QR code gets scanned, and the patient's vaccine gets verified so the person can safely return to life. See [this video](https://youtu.be/d1cubCCfjWA) for a basic demo.
 
 ## How we built it
 * A library built with PGPy handles all crypto stuff
