@@ -12,39 +12,14 @@ def validate(pub_key, message):
 	except PGPError: # in event that sig was performed by diff key
 		return False # still not valid for our purposes
 
-def real_vax(patient_name, vax_info, gov_key, clinic_key):
-	'''takes in gov and clinic pub keys, message, returns validity of vax'''
-	# verify gov signature of patient name is valid
-	if (not validate(gov_key, patient_name)):
-		return False
-	# parse vax info into dict
-	parsed_vax_info = json.loads(vax_info.message)
-	# grab clinic name as signed pgp message
-	clinic_name = pgpy.PGPMessage.from_blob(parsed_vax_info["clinic_name"])
-	# verify gov signature of clinic name is valid
-	if (not validate(gov_key, clinic_name)):
-		return False
-	# verify clinic signature of vax info is valid
-	if (not validate(clinic_key, vax_info)):
-		return False
-	# confirm given patient name matches name of patient who received vax
-	if (patient_name.message != parsed_vax_info["patient_name"]):
-		return False
-	return True
-
-def qr_info(signed_patient_name, clinic_name, date, clinic_key, gov_key):
-	'''takes in signed patient name, clinic name, date, clinic priv key, gov pub key
-	validates signatures, signs data and returns message as string'''
+def get_vaccination_qr(patient_name, clinic_name, date, clinic_key):
+	'''takes in patient name, clinic name, date, clinic priv key
+	signs data and returns message as string'''
 	# parse pgp stuff
-	parsed_signed_patient_name = pgpy.PGPMessage.from_blob(signed_patient_name)
-	parsed_gov_key, _ = pgpy.PGPKey.from_blob(gov_key)
 	parsed_clinic_key, _ = pgpy.PGPKey.from_blob(clinic_key)
-	# verify gov signature of patient name is valid
-	if (not validate(parsed_gov_key, parsed_signed_patient_name)):
-		raise RuntimeError("invalid patient name--signature check failed")
 	# prepare data for json that will be signed
 	qr_data = {
-		"signed_patient_name" : signed_patient_name,
+		"patient_name" : patient_name,
 		"clinic_name" : clinic_name,
 		"date" : date
 	}
@@ -56,6 +31,32 @@ def qr_info(signed_patient_name, clinic_name, date, clinic_key, gov_key):
 	# return signed data as string
 	return str(signed_qr)
 
+def real_vax(signed_vax, clinic_key, witness_data, gov_key):
+	'''takes in a signed vax, clinic key, witness, gov key and returns vax validity'''
+	# parse signed message, load into dict
+	signed_vax = pgpy.PGPMessage.from_blob(signed_vax)
+	vax_info = json.loads(signed_vax.message)
+	# parse other arguments
+	clinic_key, _ = pgpy.PGPKey.from_blob(clinic_key)
+	witness_data = pgpy.PGPMessage.from_blob(witness_data)
+	gov_key, _ = pgpy.PGPKey.from_blob(gov_key)
+	# parse key contained in witness data
+	witnessed_key, _ = pgpy.PGPKey.from_blob(witness_data.message)
+	# validate witness signature (should be signed by gov key)
+	if (not validate(gov_key, witness_data)):
+		return False
+	# validate witnessed (signed) key matches clinic key
+	if (str(clinic_key) != str(witnessed_key)):
+		return False
+	# verify clinic signature of vax is valid
+	if (not validate(clinic_key, signed_vax)):
+		return False
+	return True
 
-# given a dict of the type from prev func (and given clinic keys and gov keys)
-# return bool
+# given stuff from qr code, give patient's name
+def get_patient_name(signed_vax):
+	'''given a signed vax, return the patient's name'''
+	# parse signed message, load into dict
+	signed_vax = pgpy.PGPMessage.from_blob(signed_vax)
+	vax_info = json.loads(signed_vax.message)
+	return vax_info["patient_name"]

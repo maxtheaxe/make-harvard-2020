@@ -14,7 +14,7 @@ def verify():
     witness_key_data = grab_key(clinic_public_key_data['witness_url'])
     return json.dumps({
         'patient_name': get_patient_name(vaccine_signature),
-        'signatures_ok': validate_signatures(vaccine_signature, clinic_public_key_data['key'], clinic_public_key_data['witness'], witness_key_data['key']),
+        'signatures_ok': real_vax(vaccine_signature, clinic_public_key_data['key'], clinic_public_key_data['witness'], witness_key_data['key']),
         'clinic_compromised': 'compromise_date' in clinic_public_key_data,
         'clinic_witness_compromised': 'compromise_date' in witness_key_data,
         'clinic_url': patient_clinic_url,
