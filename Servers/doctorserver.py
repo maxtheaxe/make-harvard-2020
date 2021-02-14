@@ -32,8 +32,8 @@ def vaccinate():
     patient_name = patient_data['name']
     date = datetime.now().strftime(config['date_format_string'])
     qr_data = json.dumps({
-        'patient_data': get_vaccination_qr (patient_name, config['clinic_name'], date, private_key),
-        'clinic_url': f"{request.url_root}key/{config['key_id']}"
+        'vaccine_signature': get_vaccination_qr (patient_name, config['clinic_name'], date, private_key),
+        'clinic_url': f"{config['key_server']}{config['key_id']}"
     })
     if 'email' in request.form:
         send_email(request.form['email'], qr_data)
