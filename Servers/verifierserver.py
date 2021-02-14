@@ -1,7 +1,7 @@
-from flask import Flask, request, config_file, json
+from flask import Flask, request, json
 from datetime import datetime
-from ..keygrabber import grab_key
-from ...verifier import get_patient_name, real_vax
+from keygrabber import grab_key
+from verifier import get_patient_name, real_vax
 
 app = Flask(__name__)
 
@@ -10,7 +10,6 @@ def verify():
     patient_data = json.loads(request.form['patient_data'])
     vaccine_signature = patient_data['vaccine_signature']
     patient_clinic_url = patient_data['clinic_url']
-    gov_public_key_data = grab_key(patient_gov_url)
     clinic_public_key_data = grab_key(patient_clinic_url)
     witness_key_data = grab_key(clinic_public_key_data['witness_url'])
     return json.dumps({

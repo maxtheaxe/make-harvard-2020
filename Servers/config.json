@@ -1,0 +1,6 @@
+{
+    "private_keyfile": "clinic_privkey.asc",
+    "key_id": "main",
+    "clinic_name": "test_clinic",
+    "date_format_string": "%m/%d/%Y"
+}

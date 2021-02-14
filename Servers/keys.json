@@ -5,7 +5,7 @@
             "date": "02/13/2021",
             "id": "main",
             "witness": "witness_message.asc",
-            "witness_url": "localhost:5000/key/witness"
+            "witness_url": "http://localhost:5000/key/witness"
         },
         {
             "public_keyfile": "gov_pubkey.asc",
